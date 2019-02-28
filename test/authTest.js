@@ -45,9 +45,61 @@ describe('POST: /auth/login', () => {
                 res.body.should.be.a('object');
                 res.body.should.have.property('token');
                 res.body.should.have.property('error').eq(false);
+                console.log(userId);
+                chai.request(app).delete('/users/'+ userId).end();
                 done();
             });
     });
-    chai.request(app).delete('/users/'+ userId);
+});
+
+describe('POST: /auth/login', () => {
+    it('it should return an error of invalide creditential', (done) => {
+        const userData = {
+            username: "notExistingUser",
+            password: "root"
+        };
+        chai.request(app)
+            .post('/auth/login')
+            .send(userData)
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.be.a('object');
+                res.body.should.have.property('error').eq(true);
+                done();
+            });
+    });
+});
+
+describe('POST: /auth/login', () => {
+    it('it should return an error of invalide creditential', (done) => {
+        const userData = {
+            username: "notExistingUser"
+        };
+        chai.request(app)
+            .post('/auth/login')
+            .send(userData)
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.be.a('object');
+                res.body.should.have.property('error').eq(true);
+                done();
+            });
+    });
+});
+describe('POST: /auth/login', () => {
+    it('it should return an error of invalide creditential', (done) => {
+        const userData = {
+           password: "root"
+        };
+        chai.request(app)
+            .post('/auth/login')
+            .send(userData)
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.be.a('object');
+                res.body.should.have.property('error').eq(true);
+                done();
+            });
+    });
 });
 

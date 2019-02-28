@@ -34,7 +34,8 @@ exports.login = (req,res)=>{
         if (err || !user) {
             return res.status(400).json({
                 message: info ? info.message : 'Login failed',
-                user   : user
+                data   : user,
+                error: true
             });
         }
 
@@ -43,8 +44,8 @@ exports.login = (req,res)=>{
                 res.send(err);
             }
             user.set('password');
-            const token = jwt.sign({username:user.username},secret,{ expiresIn: tokenValideDuration });
-            return res.status(200).json({token,user,error:false})
+            const token = jwt.sign({_id:user._id,username:user.username},secret,{ expiresIn: tokenValideDuration });
+            return res.status(200).json({token:token,data:user,error:false})
         });
     })
     (req, res);
