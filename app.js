@@ -6,6 +6,9 @@ let createError = require('http-errors');
 let mongoose = require('mongoose');
 let express = require('express');
 
+const passport = require('passport');
+require('./config/passport');
+
 let port = process.env.PORT || 3000;
 
 mongoose.Promise = global.Promise;
@@ -14,6 +17,7 @@ mongoose.connect('mongodb://localhost/auth-service', { useNewUrlParser: true,  u
 let User = require('./models/userModel');
 let app = express();
 
+app.use(passport.initialize());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -48,6 +52,7 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
+    console.log(error);
     res.status(error.status || 500);
     res.json({
         error: {

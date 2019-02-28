@@ -1,0 +1,5 @@
+{
+  "secret":"your_jwt_secret",
+  "tokenValideDuration":"2w",
+  "url":"localhost"
+}

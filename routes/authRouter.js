@@ -4,4 +4,6 @@ module.exports = function(app) {
 
     app.route('/auth/register')
         .post(authController.register);
+    app.route('/auth/login')
+        .post(authController.login);
 };

@@ -1,6 +1,10 @@
 'use strict';
 
+let passport = require('passport');
+let jwt = require('jsonwebtoken');
 let bcrypt = require('bcryptjs');
+var secret    = require(__dirname + '/../config/config.json')['secret'];
+var tokenValideDuration    = require(__dirname + '/../config/config.json')['tokenValideDuration'];
 
 var mongoose = require('mongoose');
 let userModel = mongoose.model('Users');
@@ -19,6 +23,29 @@ exports.register = (req, res) => {
     user.save(function(err, user) {
         if (err)
             res.send({error : true,data:err});
-        res.json({error:false,data:user});
+        res.status(201).json({error:false,data:user});
     });
+};
+
+
+exports.login = (req,res)=>{
+    passport.authenticate('local', {session: false}, (err, user, info) => {
+
+        if (err || !user) {
+            return res.status(400).json({
+                message: info ? info.message : 'Login failed',
+                user   : user
+            });
+        }
+
+        req.login(user, {session: false}, (err) => {
+            if (err) {
+                res.send(err);
+            }
+            user.set('password');
+            const token = jwt.sign({username:user.username},secret,{ expiresIn: tokenValideDuration });
+            return res.status(200).json({token,user,error:false})
+        });
+    })
+    (req, res);
 };

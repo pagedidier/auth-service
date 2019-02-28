@@ -21,7 +21,7 @@ describe('POST: /auth/register', () => {
             .post('/auth/register')
             .send(userData)
             .end((err, res) => {
-                res.should.have.status(200);
+                res.should.have.status(201);
                 res.body.should.be.a('object');
                 res.body.should.have.property('data');
                 res.body.should.have.property('error').eq(false);
@@ -29,5 +29,25 @@ describe('POST: /auth/register', () => {
                 done();
             });
     });
+});
+
+describe('POST: /auth/login', () => {
+    it('it should log a new user and return a token', (done) => {
+        const userData = {
+            username: "testAuth",
+            password: "root"
+        };
+        chai.request(app)
+            .post('/auth/login')
+            .send(userData)
+            .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('token');
+                res.body.should.have.property('error').eq(false);
+                done();
+            });
+    });
     chai.request(app).delete('/users/'+ userId);
 });
+
