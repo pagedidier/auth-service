@@ -9,8 +9,10 @@ const should = chai.should();
 
 chai.use(chaiHttp);
 
+let userId;
+
 describe('POST: /users/', () => {
-    it('it should create a new user', (done) => {
+    it('it should create a new user without error', (done) => {
         const userData = {
             username: "test",
             password: "root"
@@ -22,6 +24,35 @@ describe('POST: /users/', () => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('data');
+                res.body.should.have.property('error').eq(false);
+                userId = res.body.data._id;
+                done();
+            });
+    });
+});
+
+describe('GET: /users/id', () => {
+    it("Should get a user by his id without error", (done) => {
+        chai.request(app)
+            .get('/users/'+userId)
+            .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('data');
+                res.body.should.have.property('error').eq(false);
+                done();
+            });
+    });
+});
+
+describe('DELETE /users/id', () => {
+    it("It should delete user without error", (done) => {
+        chai.request(app)
+            .delete('/users/'+ userId)
+            .end((err, res) => {
+                res.should.have.status(201);
+                res.body.should.be.a('object');
+                res.body.should.have.property('message');
                 res.body.should.have.property('error').eq(false);
                 done();
             });
@@ -63,21 +94,9 @@ describe('/POST APP', () => {
                 done();
             });
     });
-});
-describe('/GET/:id App', () => {
-    it("should update the app info", (done) => {
-        chai.request(app)
-            .get('/app/'+ 10000)
-            .end((err, res) => {
-                res.should.have.status(404);
-                res.body.should.be.a('object');
-                res.body.should.have.property('message');
-                res.body.should.have.property('error').eq(false);
-                done();
-            });
-    });
-});
+});*/
 
+/*
 describe('/PUT/:id user', () => {
     it("should update the app info", (done) => {
         const application = {
