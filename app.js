@@ -34,8 +34,10 @@ app.use((req, res, next) => {
 
 
 var userRouter = require('./routes/userRouter');
+var authRouter = require('./routes/authRouter');
 app.use(cors());
 userRouter(app);
+authRouter(app);
 app.use(function(req, res, next) {
     next(createError(404));
 });

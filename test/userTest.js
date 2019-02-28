@@ -14,7 +14,7 @@ let userId;
 describe('POST: /users/', () => {
     it('it should create a new user without error', (done) => {
         const userData = {
-            username: "test",
+            username: "testUser",
             password: "root"
         };
         chai.request(app)

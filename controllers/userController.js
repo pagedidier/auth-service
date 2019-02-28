@@ -3,7 +3,7 @@
 var mongoose = require('mongoose');
 let bcrypt = require('bcryptjs');
 
-let UserController = mongoose.model('Users');
+let userModel = mongoose.model('Users');
 
 
 exports.userAdd = function(req, res) {
@@ -13,7 +13,7 @@ exports.userAdd = function(req, res) {
     } = req.body;
 
     let hashedPassword = bcrypt.hashSync(password, 8);
-    var user = new UserController({
+    var user = new userModel({
         username: username,
         password: hashedPassword
     });
@@ -25,7 +25,7 @@ exports.userAdd = function(req, res) {
 };
 
 exports.userGet = function(req, res) {
-    UserController.findById(req.params.id, function(err, user) {
+    userModel.findById(req.params.id, function(err, user) {
         if (err)
             res.send({error:true,data:err});
         res.json({data: user,error:false});
@@ -34,7 +34,7 @@ exports.userGet = function(req, res) {
 exports.userDelete = function(req, res) {
 
 
-    UserController.deleteOne({
+    userModel.deleteOne({
         _id: req.params.id
     }, function(err, user) {
         if (err)
