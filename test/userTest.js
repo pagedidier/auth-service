@@ -81,3 +81,18 @@ describe('DELETE: /users/id', () => {
             });
     });
 });
+
+
+describe('GET: /patate', () => {
+    it("It should return an 404 error", (done) => {
+        chai.request(app)
+            .get('/patate')
+            .end((err, res) => {
+                res.should.have.status(404);
+                res.body.should.be.a('object');
+                res.body.should.have.property('message');
+                res.body.should.have.property('error').eq(true);
+                done();
+            });
+    });
+});

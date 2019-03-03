@@ -8,7 +8,6 @@ let express = require('express');
 
 const passport = require('passport');
 require('./config/passport');
-let checkTokenMidlw = require('./middleware/checkToken');
 
 
 let port = process.env.PORT || 3000;
@@ -41,22 +40,19 @@ app.use((req, res, next) => {
 
 var userRouter = require('./routes/userRouter');
 var authRouter = require('./routes/authRouter');
+
+
 app.use(cors());
 authRouter(app);
-app.use(checkTokenMidlw.checkToken);
 userRouter(app);
 
 app.use(function(req, res, next) {
     next(createError(404));
 });
-app.use((req, res, next) => {
-    const error = new Error("Not found");
-    error.status = 404;
-    next(error);
-});
+
+
 
 app.use((error, req, res, next) => {
-    console.log(error);
     res.status(error.status || 500);
     res.json({error:true,message:error.message});
 });
