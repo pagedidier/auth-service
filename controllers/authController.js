@@ -44,7 +44,7 @@ exports.login = (req,res)=>{
                 res.send(err);
             }
             user.set('password');
-            const token = jwt.sign({_id:user._id,username:user.username},secret,{ expiresIn: tokenValideDuration });
+            const token = jwt.sign({_id:user._id,username:user.username},secret,{ expiresIn: tokenValideDuration,issuer:'localhost'});
             return res.status(200).json({token:token,data:user,error:false})
         });
     })
