@@ -19,27 +19,27 @@ exports.userAdd = function(req, res) {
     });
     user.save(function(err, user) {
         if (err)
-            res.send({error : true,data:err});
-        res.json({error:false,data:user});
+            return res.json({error : true, data:err});
+        return res.status(201).json({error:false,data:user,message:'User created'});
     });
 };
 
 exports.userGet = function(req, res) {
     userModel.findById(req.params.id, function(err, user) {
         if (err)
-            res.send({error:true,data:err});
-        res.json({data: user,error:false});
+            return res.json({error:true,data:err});
+        if(req.decoded._id === user._id.toString())
+            return res.json({data: user,error:false});
+        return res.status(403).json({error:true,message:'Access dined'});
     });
 };
 exports.userDelete = function(req, res) {
-
-
     userModel.deleteOne({
         _id: req.params.id
     }, function(err, user) {
         if (err)
-            res.send(err);
-        res.status(201).json({
+            return res.json({data: err,error:true});
+        return res.status(201).json({
             error:false,
             message: "User deleted"
         });

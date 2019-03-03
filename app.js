@@ -8,6 +8,8 @@ let express = require('express');
 
 const passport = require('passport');
 require('./config/passport');
+let checkTokenMidlw = require('./middleware/checkToken');
+
 
 let port = process.env.PORT || 3000;
 
@@ -40,8 +42,10 @@ app.use((req, res, next) => {
 var userRouter = require('./routes/userRouter');
 var authRouter = require('./routes/authRouter');
 app.use(cors());
-userRouter(app);
 authRouter(app);
+app.use(checkTokenMidlw.checkToken);
+userRouter(app);
+
 app.use(function(req, res, next) {
     next(createError(404));
 });

@@ -22,7 +22,7 @@ exports.register = (req, res) => {
     });
     user.save(function(err, user) {
         if (err)
-            res.send({error : true,data:err});
+            res.status(201).json({error : true,data:err});
         res.status(201).json({error:false,data:user});
     });
 };
