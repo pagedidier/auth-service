@@ -9,9 +9,9 @@ exports.checkToken = (req, res, next) => {
         jwt.verify(token, secret, (err, decoded) => {
             if (err) {
                 return res.status(400).json({
-                    success: false,
                     message: 'Token is not valid',
-                    error: true
+                    error: true,
+                    data:null
                 });
             } else {
                 req.decoded = decoded;
@@ -22,7 +22,8 @@ exports.checkToken = (req, res, next) => {
     else {
         return res.status(401).json({
             error: true,
-            message: 'Auth token is not supplied'
+            message: 'Auth token is not supplied',
+            data:null
         });
     }
 };
