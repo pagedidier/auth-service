@@ -23,6 +23,7 @@ exports.register = (req, res) => {
     password: hashedPassword,
   });
   user.save((err, user) => {
+    user.set('password');
     if (err) return res.status(201).json({ error: true, message: 'Error while register ', data: err });
     return res.status(201).json({ error: false, message: 'Successfully register', data: user });
   });

@@ -19,12 +19,14 @@ exports.userAdd = function (req, res) {
   });
   user.save((err, user) => {
     if (err) return res.json({ error: true, data: err });
+    user.set('password');
     return res.status(201).json({ error: false, data: user, message: 'User created' });
   });
 };
 
 exports.userGet = function (req, res) {
   userModel.findById(req.params.id, (err, user) => {
+    user.set('password');
     if (err) return res.json({ error: true, data: err, message: err.message });
     if (req.decoded._id === user._id.toString()) return res.json({ data: user, error: false, message: '' });
     return res.status(403).json({ error: true, message: 'Access denied', data: null });

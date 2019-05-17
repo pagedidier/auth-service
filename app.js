@@ -18,9 +18,6 @@ require('./config/passport');
 
 
 const { port } = config;
-
-console.log(config);
-
 mongoose.Promise = global.Promise;
 mongoose.connect(`mongodb://${config.DB_URL}:${config.DB_PORT}+/${config.DB_NAME}`, { useNewUrlParser: true, useCreateIndex: true }, (err, database) => {
 });
@@ -64,5 +61,4 @@ app.use((error, req, res, next) => {
 });
 // test
 app.listen(port);
-console.log(port);
 module.exports = app;
