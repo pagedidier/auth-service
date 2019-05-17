@@ -1,8 +1,10 @@
 version: "3"
 services:
   app:
-    container_name: app
-    image: flatrome/auth-service
+    container_name: user-provuder
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     links:

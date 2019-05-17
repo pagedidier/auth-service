@@ -1,5 +1,23 @@
 {
+  "dev" : {
+    "port" : 3000,
+    "DB_URL":"localhost",
+    "DB_PORT":27018,
+    "DB_NAME": "user-provider"
+
+  },
+  "test": {
+    "port" : 3001,
+    "DB_URL":"localhost",
+    "DB_PORT":27018,
+    "DB_NAME": "user-provider-test"
+  },
+  "prod": {
+    "port" : 3000,
+    "DB_URL":"mongo",
+    "DB_PORT":27018,
+    "DB_NAME": "user-provider"
+  },
   "secret":"your_jwt_secret",
-  "tokenValideDuration":"2w",
-  "url":"localhost"
+  "tokenValideDuration":"2w"
 }
