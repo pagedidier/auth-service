@@ -1,13 +1,13 @@
-'use strict';
-let checkToken = require('../middleware/checkToken').checkToken;
 
-module.exports = function(app) {
-    var userController = require('../controllers/userController.js');
+const { checkToken } = require('../middleware/checkToken');
 
-    app.route("/users")
-        .post(checkToken,userController.userAdd);
+module.exports = function (app) {
+  const userController = require('../controllers/userController.js');
 
-    app.route("/users/:id")
-        .get(checkToken,userController.userGet)
-        .delete(checkToken,userController.userDelete);
+  app.route('/users')
+    .post(checkToken, userController.userAdd);
+
+  app.route('/users/:id')
+    .get(checkToken, userController.userGet)
+    .delete(checkToken, userController.userDelete);
 };
