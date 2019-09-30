@@ -6,4 +6,6 @@ module.exports = function (app) {
     .post(authController.register);
   app.route('/auth/login')
     .post(authController.login);
+  app.route('/auth/tokens/renew')
+    .post(authController.renewToken);
 };

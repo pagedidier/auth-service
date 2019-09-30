@@ -1,28 +1,6 @@
-
-
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
 const userModel = mongoose.model('Users');
-
-
-exports.userAdd = function (req, res) {
-  const {
-    username,
-    password,
-  } = req.body;
-
-  const hashedPassword = bcrypt.hashSync(password, 8);
-  const user = new userModel({
-    username,
-    password: hashedPassword,
-  });
-  user.save((err, user) => {
-    if (err) return res.json({ error: true, data: err });
-    user.set('password');
-    return res.status(201).json({ error: false, data: user, message: 'User created' });
-  });
-};
 
 exports.userGet = function (req, res) {
   userModel.findById(req.params.id, (err, user) => {
@@ -32,6 +10,12 @@ exports.userGet = function (req, res) {
     return res.status(403).json({ error: true, message: 'Access denied', data: null });
   });
 };
+
+exports.userUpdate = function (req,res) {
+
+};
+
+
 exports.userDelete = function (req, res) {
   userModel.deleteOne({
     _id: req.params.id,
@@ -43,4 +27,13 @@ exports.userDelete = function (req, res) {
       data: null,
     });
   });
+};
+
+
+exports.resetPassword = function (req,res) {
+
+};
+
+exports.validate = function (req,res) {
+
 };
