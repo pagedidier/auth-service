@@ -19,7 +19,10 @@ require('./config/passport');
 
 const { port } = config;
 mongoose.Promise = global.Promise;
-mongoose.connect(`mongodb://${config.DB_URL}:${config.DB_PORT}+/${config.DB_NAME}`, { useNewUrlParser: true, useCreateIndex: true }, (err, database) => {
+mongoose.connect(`mongodb://${config.DB_URL}:${config.DB_PORT}+/${config.DB_NAME}`, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useUnifiedTopology: true,
 });
 const User = require('./models/userModel');
 
@@ -62,5 +65,3 @@ app.use((error, req, res, next) => {
 // test
 app.listen(port);
 module.exports = app;
-
-patate
