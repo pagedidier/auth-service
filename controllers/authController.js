@@ -1,5 +1,3 @@
-
-
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -31,8 +29,8 @@ exports.register = (req, res) => {
 
 
 exports.login = (req, res) => {
-  passport.authenticate('local', { session: false }, (err, user, info) => {
-    if (err || !user) {
+  passport.authenticate('local', { session: false }, (authenticateError, user, info) => {
+    if (authenticateError || !user) {
       return res.status(400).json({
         message: info ? info.message : 'Login failed',
         data: user,
@@ -40,9 +38,9 @@ exports.login = (req, res) => {
       });
     }
 
-    req.login(user, { session: false }, (err) => {
-      if (err) {
-        res.send(err);
+    req.login(user, { session: false }, (loginError) => {
+      if (loginError) {
+        res.send(loginError);
       }
       user.set('password');
       const token = jwt.sign({ _id: user._id, username: user.username }, secret, { expiresIn: tokenValideDuration, issuer: 'localhost' });
@@ -51,4 +49,8 @@ exports.login = (req, res) => {
       });
     });
   })(req, res);
+};
+
+exports.renewToken = (req,res)=> {
+
 };
