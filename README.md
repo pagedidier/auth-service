@@ -25,7 +25,7 @@ For the first version of the project we will have a basic `userSchema`
   	}
   	status: {
     	type: String,
-    	enum: ['pending-validate','validate','prending-reset','pending-removed']
+    	enum: ['pending-validate','validated','pending-reset','pending-removed']
     	required: '',
   	}
 }
