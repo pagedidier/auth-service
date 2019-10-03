@@ -26,14 +26,13 @@ exports.register = (req, res) => {
     password: hashedPassword,
   });
   newUser.save((err, user) => {
-    if (err) return res.status(201).json({ error: true, message: 'Error while register ', data: err });
+    if (err) return res.status(400).json({ error: true, message: 'Error while register ', data: err });
     user.set('password');
 
 
     const validationToken = jwt.sign({ nextStatus: 'validated' }, secret, { expiresIn: '1d' });
     // TOFDO : check if it's not too long
     const validationLink = `http://${frontUrl}/validation?id=${user._id}&token=${validationToken}`;
-    console.log(validationLink.length);
     const mailOptions = {
       from: 'test@test.com', // sender address
       to: email,
