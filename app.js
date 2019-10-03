@@ -11,6 +11,7 @@ const passport = require('passport');
 const configFile = require('./config/config.json');
 
 const environment = process.env.NODE_ENV || 'dev';
+
 const config = configFile[environment];
 
 
@@ -24,6 +25,7 @@ mongoose.connect(`mongodb://${config.DB_URL}:${config.DB_PORT}+/${config.DB_NAME
   useCreateIndex: true,
   useUnifiedTopology: true,
 });
+
 const User = require('./models/userModel');
 
 const app = express();

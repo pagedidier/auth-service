@@ -2,6 +2,8 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
+const mailController = require('../controllers/mailController');
+
 const { secret } = require(`${__dirname}/../config/config.json`);
 const { tokenValideDuration } = require(`${__dirname}/../config/config.json`);
 
@@ -13,17 +15,34 @@ exports.register = (req, res) => {
   if (req.body.username === undefined || req.body.password === undefined) return res.status(400).json({ error: true, message: 'You should provide a username and a password', data: null });
   const {
     username,
+    email,
     password,
+    frontUrl,
   } = req.body;
   const hashedPassword = bcrypt.hashSync(password, 8);
-  const user = new userModel({
+  const newUser = new userModel({
     username,
+    email,
     password: hashedPassword,
   });
-  user.save((err, user) => {
-    user.set('password');
+  newUser.save((err, user) => {
     if (err) return res.status(201).json({ error: true, message: 'Error while register ', data: err });
-    return res.status(201).json({ error: false, message: 'Successfully register', data: user });
+    user.set('password');
+
+
+    const validationToken = jwt.sign({ nextStatus: 'validated' }, secret, { expiresIn: '1d' });
+    // TOFDO : check if it's not too long
+    const validationLink = `http://${frontUrl}/validation?id=${user._id}&token=${validationToken}`;
+    console.log(validationLink.length);
+    const mailOptions = {
+      from: 'test@test.com', // sender address
+      to: email,
+      subject: 'Validate your email adress', // Subject line
+      text: validationLink, // plain text body
+      html: `<a>${validationLink}</a>`, // html body
+    };
+    mailController.sendMail(mailOptions);
+    return res.status(201).json({ error: false, message: 'Successfully register, please valide your email adress', data: user });
   });
 };
 
@@ -51,6 +70,6 @@ exports.login = (req, res) => {
   })(req, res);
 };
 
-exports.renewToken = (req,res)=> {
+exports.renewToken = (req, res) => {
 
 };
