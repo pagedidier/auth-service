@@ -1,24 +1,22 @@
-
 require('dotenv').config();
+
+// Dependencies
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const createError = require('http-errors');
 const mongoose = require('mongoose');
 const express = require('express');
-
 const passport = require('passport');
+
+// Config
 const configFile = require('./config/config.json');
-
-const environment = process.env.NODE_ENV || 'dev';
-
-const config = configFile[environment];
-
-
+const { handleError, ErrorHandler } = require('./helpers/error');
 require('./config/passport');
 
+const environment = process.env.NODE_ENV || 'dev';
+const config = configFile[environment];
 
-const { port } = config;
+// Config
 mongoose.Promise = global.Promise;
 mongoose.connect(`mongodb://${config.DB_URL}:${config.DB_PORT}+/${config.DB_NAME}`, {
   useNewUrlParser: true,
@@ -26,14 +24,15 @@ mongoose.connect(`mongodb://${config.DB_URL}:${config.DB_PORT}+/${config.DB_NAME
   useUnifiedTopology: true,
 });
 
-const User = require('./models/userModel');
-
+// Express configuration
 const app = express();
 
 app.use(passport.initialize());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors());
+
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -45,25 +44,30 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
     return res.status(200).json({});
   }
-  next();
+  return next();
 });
 
+// Models
+require('./models/userModel');
+
+// Routers
 const userRouter = require('./routes/userRouter');
 const authRouter = require('./routes/authRouter');
 
-app.use(cors());
 authRouter(app);
 userRouter(app);
 
+// Send a 404 when no other routes are found
 app.use((req, res, next) => {
-  next(createError(404));
+  throw new ErrorHandler(404, 'Resource not found');
 });
 
-
-app.use((error, req, res, next) => {
-  res.status(error.status || 500);
-  res.json({ error: true, message: error.message });
+// Handle the error
+app.use((err, req, res, next) => {
+  handleError(err, res);
+  next();
 });
-// test
-app.listen(port);
+
+app.listen(config.port);
+
 module.exports = app;

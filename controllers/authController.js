@@ -1,47 +1,54 @@
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
+
 
 const mailController = require('../controllers/mailController');
 
-const { secret } = require(`${__dirname}/../config/config.json`);
-const { tokenValideDuration } = require(`${__dirname}/../config/config.json`);
+const { secret, tokenValideDuration } = require('../config/config.json');
+const configFile = require('../config/config.json');
 
-const mongoose = require('mongoose');
+const environment = process.env.NODE_ENV || 'dev';
+const config = configFile[environment];
 
-const userModel = mongoose.model('Users');
+const { handleError, ErrorHandler } = require('../helpers/error');
 
-exports.register = (req, res) => {
-  if (req.body.username === undefined || req.body.password === undefined) return res.status(400).json({ error: true, message: 'You should provide a username and a password', data: null });
+
+const UserModel = mongoose.model('Users');
+
+exports.register = (req, res, next) => {
   const {
     username,
     email,
     password,
     frontUrl,
   } = req.body;
+  if (!username || !password) throw new ErrorHandler(400, 'Username and password are required');
   const hashedPassword = bcrypt.hashSync(password, 8);
-  const newUser = new userModel({
+  const newUser = new UserModel({
     username,
     email,
     password: hashedPassword,
   });
   newUser.save((err, user) => {
-    if (err) return res.status(400).json({ error: true, message: 'Error while register ', data: err });
+    if (err) return next(new ErrorHandler(400, err));
+
     user.set('password');
-
-
     const validationToken = jwt.sign({ nextStatus: 'validated' }, secret, { expiresIn: '1d' });
-    // TOFDO : check if it's not too long
+    // TODO : check if it's not too long
     const validationLink = `http://${frontUrl}/validation?id=${user._id}&token=${validationToken}`;
     const mailOptions = {
-      from: 'test@test.com', // sender address
+      from: config.mail.address,
       to: email,
-      subject: 'Validate your email adress', // Subject line
-      text: validationLink, // plain text body
-      html: `<a>${validationLink}</a>`, // html body
+      subject: 'Validate your email address',
+      text: validationLink,
+      html: `<a>${validationLink}</a>`,
     };
+
+    // TODO : handle error
     mailController.sendMail(mailOptions);
-    return res.status(201).json({ error: false, message: 'Successfully register, please valide your email adress', data: user });
+    return res.status(201).json({ error: false, message: 'Successfully register, please valid your email address', data: user });
   });
 };
 
@@ -55,7 +62,6 @@ exports.login = (req, res) => {
         error: true,
       });
     }
-
     req.login(user, { session: false }, (loginError) => {
       if (loginError) {
         res.send(loginError);

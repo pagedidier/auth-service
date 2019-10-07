@@ -22,8 +22,4 @@ passport.use(new LocalStrategy({
     });
   }
   return cb(false, null, { message: 'Email account not found' });
-})
-  .catch((err) => {
-    console.log(err);
-    return cb(err);
-  }))));
+}).catch(err => cb(err)))));

@@ -38,7 +38,7 @@ describe('Tests for /register route', () => {
   it('it try to register a user without password', (done) => {
     chai.request(app)
       .post('/auth/register')
-      .send({ username: 'testUser', email: userData.email })
+      .send({ username: userData.username, email: userData.email })
       .end((err, res) => {
         expect(res.status)
           .to
@@ -60,7 +60,7 @@ describe('Tests for /register route', () => {
   it('it try to register a user without username', (done) => {
     chai.request(app)
       .post('/auth/register')
-      .send({ password: 'password', email: userData.email })
+      .send({ password: userData.password, email: userData.email })
       .end((err, res) => {
         expect(res.status)
           .to
@@ -82,7 +82,7 @@ describe('Tests for /register route', () => {
   it('it try to register a user without email', (done) => {
     chai.request(app)
       .post('/auth/register')
-      .send({ username: userData.username, password: 'password' })
+      .send({ username: userData.username, password: userData.password })
       .end((err, res) => {
         expect(res.status)
           .to
@@ -119,7 +119,11 @@ describe('Tests for /register route', () => {
     it('it should create a new user without error', (done) => {
       chai.request(app)
         .post('/auth/register')
-        .send(userData)
+        .send({
+          username: userData.username,
+          email: userData.email,
+          password: userData.password,
+        })
         .end((err, res) => {
           expect(res.status)
             .to
