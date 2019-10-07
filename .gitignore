@@ -3,3 +3,4 @@ node_modules/
 package-lock.json
 data
 .env
+config/config.json
